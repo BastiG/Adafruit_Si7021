@@ -47,6 +47,8 @@
 #define SI7021_REV_1					0xff  /**< Sensor revision 1 */
 #define SI7021_REV_2					0x20  /**< Sensor revision 2 */
 
+#define SI7021_HTRE           0x04  /**< Heater Enable */
+
 /** An enum to represent sensor types **/
 enum si_sensorType {
   SI_Engineering_Samples,
@@ -69,6 +71,9 @@ class Adafruit_Si7021 {
   void reset();
   void readSerialNumber();
   float readHumidity();
+
+  void setHeater(bool on, uint8_t level=0x04);
+  bool isHeating();
 
   /*!
   *  @brief  Returns sensor revision established during init 

@@ -131,6 +131,37 @@ float Adafruit_Si7021::readTemperature() {
   return NAN; // Error timeout
 }
 
+/*!
+ *  @brief  Enables or disables the heater element on the Si7021
+ *  @param  on
+ *          Enables the heater if true
+ *  @param  level
+ *          Specifies the current level on the heater element, valid range 0x0 to 0xF
+ */
+void Adafruit_Si7021::setHeater(bool on, uint8_t level) {
+  uint8_t state;
+  state = _readRegister8(SI7021_READRHT_REG_CMD);
+  if (on) {
+    state |= SI7021_HTRE;
+  } else {
+    state &= (0xFF ^ SI7021_HTRE);
+  }
+  _writeRegister8(SI7021_WRITERHT_REG_CMD, state);
+  if (on) {
+    state = _readRegister8(SI7021_READHEATER_REG_CMD) & 0xF0;
+    state |= (level & 0x0F);
+    _writeRegister8(SI7021_WRITEHEATER_REG_CMD, state);
+  }
+}
+
+/*!
+ *  @brief  Checks if the heater element is enabled
+ *  @return Returns true if the heater is enabled
+ */
+bool Adafruit_Si7021::isHeating(void) {
+  uint8_t state = _readRegister8(SI7021_READRHT_REG_CMD);
+  return (state & SI7021_HTRE) == SI7021_HTRE;
+}
 
 /*!
  *  @brief  Sends the reset command to Si7021.
